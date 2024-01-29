@@ -2,7 +2,7 @@
 
 set xev
 
-source .env
+source $ENV
 credentials=$(jq -c '.[]' "$CREDENTIALS")
 
 generateAuthenticationTokens(){
