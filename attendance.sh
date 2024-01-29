@@ -86,10 +86,10 @@ prepareUpdateRefreshToken(){
 
 updateRefreshToken(){
   jq_commands=${jq_commands% | }
-  jq "$jq_commands" "$CREDENTIALS" > "~$CREDENTIALS"
+  jq "$jq_commands" "$CREDENTIALS" > "$CREDENTIALS~"
 
   rm "$CREDENTIALS"
-  mv "~$CREDENTIALS" "$CREDENTIALS"
+  mv "$CREDENTIALS~" "$CREDENTIALS"
 }
 
 index=0
