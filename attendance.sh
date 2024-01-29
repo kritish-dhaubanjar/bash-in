@@ -70,7 +70,7 @@ updateAttendance(){
 
   local statusCode="${response: -3}"
 
-  if [ "$statusCode" -ne 200 ]; then
+  if [ "$statusCode" -ne 201 ]; then
     return 1
   fi
 
