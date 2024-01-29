@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set xev
-
 source $ENV
 credentials=$(jq -c '.[]' "$CREDENTIALS")
 
