@@ -138,10 +138,9 @@ while read -r credential; do
     echo "error: [$at] failed to apply worklog of $workDate for $name"
     continue
   else
+    read -r workDate location <<< "$attendance"
     echo "info: [$at] applied worklog of $workDate at $location for $name"
   fi
-
-  read -r workDate location <<< "$attendance"
 
   ############################
   # prepareUpdateRefreshToken
