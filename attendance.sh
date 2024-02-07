@@ -104,10 +104,10 @@ while read -r credential; do
   tokens=$(generateAuthenticationTokens "$refreshToken")
 
   if [ $? -ne 0 ];then
-    echo "error: [$at] failed to fetch new access token & refresh token for $name"
+    logger -p user.err "error: [$at] failed to fetch new access token & refresh token for $name"
     continue
   else
-    echo "info: [$at] fetched new access token & refresh token for $name"
+    logger -p user.info "info: [$at] fetched new access token & refresh token for $name"
   fi
 
   read -r accessToken refreshToken <<< "$tokens"
@@ -118,14 +118,14 @@ while read -r credential; do
   calendar=$(checkCalendar "$accessToken")
 
   if [ $? -ne 0 ];then
-    echo "error: [$at] failed to fetch calendar for $workDate"
+    logger -p user.err "error: [$at] failed to fetch calendar for $workDate"
     continue
   fi
 
   read -r workDate holiday <<< "$calendar"
 
   if [ "$holiday" != "null" ]; then
-    echo "info: [$at] skipping for holiday on $workDate"
+    logger -p user.info "info: [$at] skipping for holiday on $workDate"
     continue
   fi
 
@@ -135,11 +135,11 @@ while read -r credential; do
   attendance=$(updateAttendance "$accessToken" "$locations")
 
   if [ $? -ne 0 ];then
-    echo "error: [$at] failed to apply worklog of $workDate for $name"
+    logger -p user.err "error: [$at] failed to apply worklog of $workDate for $name"
     continue
   else
     read -r workDate location <<< "$attendance"
-    echo "info: [$at] applied worklog of $workDate at $location for $name"
+    logger -p user.info "info: [$at] applied worklog of $workDate at $location for $name"
   fi
 
   ############################
