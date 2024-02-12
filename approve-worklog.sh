@@ -57,6 +57,16 @@ while read -r credential; do
   accessToken=$(jq -r '.accessToken' <<< "$credential")
 
   #######################
+  # approve-worklog
+  #######################
+  switch=$(jq -r '.switch."approve-worklog"' <<< "$credential")
+
+  if [ "$switch" != "true" ]; then
+    logger -p user.info "info: [$at] skipping for $name's team"
+    continue
+  fi
+
+  #######################
   # getSubmittedWorklogs
   #######################
   worklogs=$(getSubmittedWorklogs "$accessToken")
