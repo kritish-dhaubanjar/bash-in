@@ -79,7 +79,9 @@ jq_commands=""
 prepareUpdateRefreshToken(){
   local index=$1
   local refreshToken=$2
+  local accessToken=$3
   jq_commands+=".[$index].refreshToken=\"$refreshToken\" | "
+  jq_commands+=".[$index].accessToken=\"$accessToken\" | "
 }
 
 updateRefreshToken(){
@@ -145,7 +147,7 @@ while read -r credential; do
   ############################
   # prepareUpdateRefreshToken
   ############################
-  prepareUpdateRefreshToken "$index" "$refreshToken"
+  prepareUpdateRefreshToken "$index" "$refreshToken" "$accessToken"
 
   index=$(($index + 1))
 done <<< "$credentials"
