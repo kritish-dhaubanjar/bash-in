@@ -86,9 +86,9 @@ while read -r credential; do
   while read -r worklog; do
     worklogId=$(jq -r '.id' <<< "$worklog")
 
-  #   #################
-  #   # processWorklog
-  #   #################
+  ##################
+  # processWorklog
+  ##################
     processWorklog "$accessToken" "$worklogId"
 
     if [ $? -ne 0 ];then
