@@ -76,7 +76,7 @@ while read -r credential; do
     continue
   fi
 
-  worklogs=$(echo "$worklogs" | jq '.[]')
+  worklogs=$(echo "$worklogs" | jq -c '.[]')
 
   if [ -z "$worklogs" ]; then
     logger -p user.info "info: [$at] no worklogs to approve for $name's team"
@@ -84,11 +84,11 @@ while read -r credential; do
   fi
 
   while read -r worklog; do
-    worklogId=$(jq -r '.worklog.id' <<< "$worklog")
+    worklogId=$(jq -r '.id' <<< "$worklog")
 
-    #################
-    # processWorklog
-    #################
+  #   #################
+  #   # processWorklog
+  #   #################
     processWorklog "$accessToken" "$worklogId"
 
     if [ $? -ne 0 ];then
