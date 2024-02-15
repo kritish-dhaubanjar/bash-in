@@ -84,6 +84,8 @@ while read -r credential; do
 
   while read -r worklog; do
     worklogId=$(jq -r '.id' <<< "$worklog")
+    employeeName=$(jq -r '.employee.fullname' <<< "$worklog")
+    workDate=$(jq -r '.workDate' <<< "$worklog")
 
     ##################
     # processWorklog
@@ -91,10 +93,10 @@ while read -r credential; do
     processWorklog "$accessToken" "$worklogId"
 
     if [ $? -ne 0 ];then
-      logger -p user.err "error: [$at] failed to APPROVE worklogId $worklogId"
+      logger -p user.err "error: [$at] failed to APPROVE worklogId $worklogId, of $employeeName for $workDate"
       continue
     fi
 
-    logger -p user.info "info: [$at] approved worklogId $worklogId"
+    logger -p user.info "info: [$at] approved worklogId $worklogId, of $employeeName for $workDate"
   done <<< $worklogs
 done <<< $credentials
