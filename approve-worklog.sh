@@ -49,7 +49,6 @@ processWorklog(){
   return 0
 }
 
-index=0
 while read -r credential; do
   at=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -86,9 +85,9 @@ while read -r credential; do
   while read -r worklog; do
     worklogId=$(jq -r '.id' <<< "$worklog")
 
-  ##################
-  # processWorklog
-  ##################
+    ##################
+    # processWorklog
+    ##################
     processWorklog "$accessToken" "$worklogId"
 
     if [ $? -ne 0 ];then
