@@ -35,8 +35,8 @@ while read -r credential; do
   at=$(date +"%Y-%m-%d %H:%M:%S")
   name=$(jq -r '.name' <<< "$credential")
   accessToken=$(jq -r '.accessToken' <<< "$credential")
-  projectId=$(jq -r '.projectId' <<< $credential)
-  reportUserIds=$(jq -r '.reportUserIds' <<< $credential)
+  projectId=$(jq -r '.projectId' <<< "$credential")
+  reportUserIds=$(jq -r '.reportUserIds' <<< "$credential")
 
   switch=$(jq -r '.switch."weekly-report"' <<< "$credential")
 
