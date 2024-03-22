@@ -34,8 +34,8 @@ getWeeklyReport() {
 while read -r credential; do
   at=$(date +"%Y-%m-%d %H:%M:%S")
   name=$(jq -r '.name' <<< "$credential")
-  accessToken=$(jq -r '.accessToken' <<< "$credential")
   projectId=$(jq -r '.projectId' <<< "$credential")
+  accessToken=$(jq -r '.accessToken' <<< "$credential")
   reportUserIds=$(jq -r '.reportUserIds' <<< "$credential")
 
   switch=$(jq -r '.switch."weekly-report"' <<< "$credential")
@@ -47,10 +47,16 @@ while read -r credential; do
 
   report=$(getWeeklyReport "$accessToken" "$projectId" "$reportUserIds")
 
-  if [ $? -ne 0 ];then
+  if [ $? -ne 0 ]; then
     logger -p user.err "error: [$at] failed to fetch weekly report for $name's team"
     continue
   fi
 
-  echo -e "[$startDate] - [$endDate]\n$name's team\n$report\n\n" | cat - ~/weekly-psr.txt > ~/weekly-psr.txt~ && mv weekly-psr.txt~ weekly-psr.txt
+  if [ ! -f "~/weekly-psr.txt" ]; then
+    touch ~/weekly-psr.txt
+  fi
+
+  echo -e "[$startDate] - [$endDate]\n$name's team\n$report\n\n" | cat - ~/weekly-psr.txt > ~/weekly-psr.txt~ && mv ~/weekly-psr.txt~ ~/weekly-psr.txt
+
+  logger -p user.info "info: [$at] generated weekly report for $name's team"
 done <<< $credentials
