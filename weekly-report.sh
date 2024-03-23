@@ -60,12 +60,12 @@ while read -r credential; do
 
   epicReport=$(jiraReport "$credential")
 
-  echo -e "<detail>
+  echo -e "<details>
       <summary><b>[$startDate] - [$endDate] $name's team</b></summary>
       <pre>$report</pre>
       <h5>Percentage:</h5>
       <pre>$epicReport</pre>
-    </detail>\n" | cat - ~/weekly-psr.html > ~/weekly-psr.html~ && mv ~/weekly-psr.html~ ~/weekly-psr.html
+    </details>\n" | cat - ~/weekly-psr.html > ~/weekly-psr.html~ && mv ~/weekly-psr.html~ ~/weekly-psr.html
 
   logger -p user.info "info: [$at] generated weekly report for $name's team"
 done <<< $credentials
