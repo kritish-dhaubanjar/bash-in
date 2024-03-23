@@ -1,6 +1,8 @@
 #!/bin/bash
 
 source $ENV
+source "$JIRA_REPORTER"
+
 credentials=$(jq -c '.[]' "$CREDENTIALS")
 
 endDate=$(date -d "last Saturday" +"%Y-%m-%d")
@@ -52,11 +54,19 @@ while read -r credential; do
     continue
   fi
 
-  if [ ! -f "~/weekly-psr.txt" ]; then
-    touch ~/weekly-psr.txt
+  if [ ! -e ~/weekly-psr.html ]; then
+    touch ~/weekly-psr.html
   fi
 
-  echo -e "[$startDate] - [$endDate]\n$name's team\n$report\n\n" | cat - ~/weekly-psr.txt > ~/weekly-psr.txt~ && mv ~/weekly-psr.txt~ ~/weekly-psr.txt
+  epicReport=$(jiraReport "$credential")
+
+  echo -e "<section>
+      <h3>[$startDate] - [$endDate]</h3>
+      <h4>$name's team</h4>
+      <pre>$report</pre>
+      <h5>Percentage:</h5>
+      <pre>$epicReport</pre>
+    </section>\n" | cat - ~/weekly-psr.html > ~/weekly-psr.html~ && mv ~/weekly-psr.html~ ~/weekly-psr.html
 
   logger -p user.info "info: [$at] generated weekly report for $name's team"
 done <<< $credentials
