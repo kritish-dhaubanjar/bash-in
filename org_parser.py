@@ -40,6 +40,13 @@ def get_tasks_list_with_properties(org_content):
           "time_spent": 0,
       }
 
+      for childText in entry.body.splitlines():
+        text = childText.strip()
+        if text == ':LOGBOOK:' or text == ':END:':
+          continue
+
+        todo_item['title'] += "\n  " + text
+
       # Extract time spent from logbook
       for clock in entry.clock:
         todo_item["time_spent"] += (clock.duration.seconds // 60)
