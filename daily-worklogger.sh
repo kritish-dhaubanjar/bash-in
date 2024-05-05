@@ -244,14 +244,15 @@ while read credential; do
     continue
   fi
 
+  logger -p user.info "info: ${WORKLOG["Coding"]}"
+  logger -p user.info "info: ${WORKLOG["Meeting"]}"
+
   sendWorklog "$accessToken" "$pendingWorklogId" "$projectInvolvement"
 
   if [ $? -ne 0 ]; then
-    logger -p user.err "error: [$at] failed to fill worklogId of $name for $today"
+    logger -p user.err "error: [$at] failed to fill pending worklog of $name for $today"
     continue
   fi
 
   logger -p user.info "info: [$at] successfully filled of $name for $today, in draft state"
-  logger -p user.info "info: ${WORKLOG["Coding"]}"
-  logger -p user.info "info: ${WORKLOG["Meeting"]}"
 done <<< $credentials
