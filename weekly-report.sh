@@ -30,7 +30,7 @@ getWeeklyReport() {
 
   local json="${response%???}"
 
-  echo "$json" | jq -r '.data[] | .worklogs[] | .detail[] | .tasks[] | select(.taskType.name == "Coding") | .note' | sed 's/\\n/\n/g'
+  echo "$json" | jq -r '.data[] | .worklogs[] | .detail[] | .tasks[] | select(.taskType.name == "Coding" or .taskType.name == "QA") | .note' | sed 's/\\n/\n/g'
 }
 
 while read -r credential; do
