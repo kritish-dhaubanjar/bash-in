@@ -154,7 +154,7 @@ EOF
   return 0
 }
 
-while read credential; do
+while read -r credential; do
   today=$(date +%F)
   at=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -186,10 +186,10 @@ while read credential; do
   jiraIssues=$(jq -c '.[]' <<< "$jiraIssues")
 
   if [[ ! -z $jiraIssues ]]; then
-    while read jiraIssue; do
-      key=$(jq -r '.key' <<< $jiraIssue)
-      summary=$(jq -r '.summary' <<< $jiraIssue)
-      status=$(jq -r '.status' <<< $jiraIssue)
+    while read -r jiraIssue; do
+      key=$(jq -r '.key' <<< "$jiraIssue")
+      summary=$(jq -r '.summary' <<< "$jiraIssue")
+      status=$(jq -r '.status' <<< "$jiraIssue")
 
       WORKLOG["Coding"]+="• $key: $summary [$status]\n"
     done <<< "$jiraIssues"
@@ -216,8 +216,8 @@ while read credential; do
   outlookCalendarEvents=$(jq -c '.[]' <<< "$outlookCalendarEvents")
 
   if [[ ! -z $outlookCalendarEvents ]]; then
-    while read outlookCalendarEvent; do
-      event=$(jq -r '.subject' <<< $outlookCalendarEvent)
+    while read -r outlookCalendarEvent; do
+      event=$(jq -r '.subject' <<< "$outlookCalendarEvent")
 
       WORKLOG["Meeting"]+="• $event\n"
     done <<< "$outlookCalendarEvents"
