@@ -244,8 +244,8 @@ while read credential; do
     continue
   fi
 
-  logger -p user.info "info: ${WORKLOG["Coding"]}"
-  logger -p user.info "info: ${WORKLOG["Meeting"]}"
+  [[ ! -z "${WORKLOG["Coding"]}" ]] && logger -p user.info "info: ${WORKLOG["Coding"]}"
+  [[ ! -z "${WORKLOG["Meeting"]}" ]] && logger -p user.info "info: ${WORKLOG["Meeting"]}"
 
   sendWorklog "$accessToken" "$pendingWorklogId" "$projectInvolvement"
 
