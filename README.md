@@ -24,6 +24,7 @@ pip install orgparse
 # midnight
 15 18 * * 0-6 ENV=/home/orangepi/workspace/bash-in/.env /home/orangepi/workspace/bash-in/authenticate.sh
 16 18 * * 1-5 ENV=/home/orangepi/workspace/bash-in/.env /home/orangepi/workspace/bash-in/fill-worklog.sh
+17 18 * * 1-5 ENV=/home/vim1s/bash-in/.env /home/vim1s/bash-in/daily-worklogger.sh
 ```
 
 ![image](https://github.com/kritish-dhaubanjar/bash-in/assets/25634165/eb06e67c-03c9-410c-bab1-cc3eb374a4fa)
