@@ -249,6 +249,9 @@ while read -r credential; do
 
   sendWorklog "$accessToken" "$pendingWorklogId" "$projectInvolvement"
 
+  WORKLOG["Coding"]=""
+  WORKLOG["Meeting"]=""
+
   if [ $? -ne 0 ]; then
     logger -p user.err "error: [$at] failed to fill pending worklog of $name for $today"
     continue
