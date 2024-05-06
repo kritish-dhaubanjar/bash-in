@@ -161,6 +161,9 @@ while read -r credential; do
   name=$(jq -r '.name' <<< "$credential")
   switch=$(jq -r '.switch."daily-worklogger"' <<< "$credential")
 
+  WORKLOG["Coding"]=""
+  WORKLOG["Meeting"]=""
+
   if [ "$switch" != "true" ]; then
     logger -p user.info "info: [$at] skipping daily-worklogger for $name"
     continue
@@ -248,9 +251,6 @@ while read -r credential; do
   [[ ! -z "${WORKLOG["Meeting"]}" ]] && logger -p user.info "info: ${WORKLOG["Meeting"]}"
 
   sendWorklog "$accessToken" "$pendingWorklogId" "$projectInvolvement"
-
-  WORKLOG["Coding"]=""
-  WORKLOG["Meeting"]=""
 
   if [ $? -ne 0 ]; then
     logger -p user.err "error: [$at] failed to fill pending worklog of $name for $today"
