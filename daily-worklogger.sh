@@ -12,10 +12,10 @@ function getJiraIssues(){
   jiraDomain=$1
   jiraAuthHeader=$2
   jiraUserId=$3
-  jiraUserName=$4
+  jiraUsername=$4
 
   local response=$(curl -s -w "%{http_code}" -X GET -G "$jiraDomain/rest/api/2/search" \
-    --data-urlencode "jql=(updated > -1d AND (assignee=$jiraUserId OR \"QA Assignee 1[User Picker (single user)]\"=$jiraUserId OR \"Assignee 2[User Picker (single user)]\"=$jiraUserId)) OR (jql=issuekey in updatedBy($jiraUserName, -1d))" \
+    --data-urlencode "jql=(updated > -1d AND (assignee=$jiraUserId OR \"QA Assignee 1[User Picker (single user)]\"=$jiraUserId OR \"Assignee 2[User Picker (single user)]\"=$jiraUserId)) OR (issuekey in updatedBy('$jiraUsername', -1d))" \
     -H "Content-Type: application/json" \
     -H "$jiraAuthHeader"
   )
@@ -180,7 +180,7 @@ while read -r credential; do
   jiraApiToken=$(jq -r '.jira.apiToken' <<< "$credential")
   jiraAuthHeader="Authorization: Basic $(echo -n "$jiraUsername:$jiraApiToken" | base64 -w 0)"
 
-  jiraIssues=$(getJiraIssues $jiraDomain "$jiraAuthHeader" $jiraUserId "$jiraUserName")
+  jiraIssues=$(getJiraIssues $jiraDomain "$jiraAuthHeader" $jiraUserId "$jiraUsername")
 
   if [ $? -ne 0 ]; then
     logger -p user.err "error: [$at] failed to fetch jira issues of $name"
