@@ -124,14 +124,14 @@ sendWorklog() {
               "id": 1,
               "name": "Coding"
             },
-            "note": "${WORKLOG["Coding"]}"
+            "note": "$(echo ${WORKLOG["Coding"]} | tr '"' "'")"
           },
           {
             "taskType": {
               "id": 4,
               "name": "Meeting"
             },
-            "note": "${WORKLOG["Meeting"]}"
+            "note": "$(echo ${WORKLOG["Meeting"]} | tr '"' "'")"
           }
         ]
       }
