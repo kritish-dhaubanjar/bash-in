@@ -197,6 +197,8 @@ while read -r credential; do
       summary=$(jq -r '.summary' <<< "$jiraIssue")
       status=$(jq -r '.status' <<< "$jiraIssue")
 
+      logger -p user.info "info: • $key: $summary [$status]\n"
+
       WORKLOG["Coding"]+="• $key: $summary [$status]\n"
     done <<< "$jiraIssues"
   fi
@@ -225,6 +227,8 @@ while read -r credential; do
     while read -r outlookCalendarEvent; do
       event=$(jq -r '.subject' <<< "$outlookCalendarEvent")
 
+      logger -p user.info "info: • $event"
+
       WORKLOG["Meeting"]+="• $event\n"
     done <<< "$outlookCalendarEvents"
   fi
@@ -249,9 +253,6 @@ while read -r credential; do
     logger -p user.err "error: [$at] failed to fetch project involvement of $name"
     continue
   fi
-
-  [[ ! -z "${WORKLOG["Coding"]}" ]] && logger -p user.info "info: ${WORKLOG["Coding"]}"
-  [[ ! -z "${WORKLOG["Meeting"]}" ]] && logger -p user.info "info: ${WORKLOG["Meeting"]}"
 
   sendWorklog "$accessToken" "$pendingWorklogId" "$projectInvolvement"
 
