@@ -197,7 +197,7 @@ while read -r credential; do
       summary=$(jq -r '.summary' <<< "$jiraIssue")
       status=$(jq -r '.status' <<< "$jiraIssue")
 
-      logger -p user.info "info: • $key: $summary [$status]\n"
+      logger -p user.info "info: • $key: $summary [$status]"
 
       WORKLOG["Coding"]+="• $key: $summary [$status]\n"
     done <<< "$jiraIssues"
