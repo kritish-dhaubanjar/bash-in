@@ -8,7 +8,7 @@ declare -A WORKLOG=(
   Meeting=""
 )
 
-function getJiraIssues(){
+function getJiraIssues() {
   jiraDomain=$1
   jiraAuthHeader=$2
   jiraUserId=$3
@@ -34,7 +34,7 @@ function getJiraIssues(){
   echo "$jiraIssues"
 }
 
-function getOutlookCalendarEvents(){
+function getOutlookCalendarEvents() {
   outlookCalendarAPI=$1
   outlookAuthHeader=$2
 
@@ -56,7 +56,7 @@ function getOutlookCalendarEvents(){
   echo "$outlookCalendarEvents"
 }
 
-getProjectInvolvement() {
+function getProjectInvolvement() {
   local accessToken="$1"
   local projectId="$2"
 
@@ -77,7 +77,7 @@ getProjectInvolvement() {
   echo "$projectInvolvement"
 }
 
-getPendingWorklog() {
+function getPendingWorklog() {
   local accessToken=$1
   local date=$2
 
@@ -103,7 +103,7 @@ getPendingWorklog() {
   echo "$pendingWorklog"
 }
 
-sendWorklog() {
+function sendWorklog() {
   local accessToken=$1
   local pendingWorklogId=$2
   local projectInvolvement=$3
