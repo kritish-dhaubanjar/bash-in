@@ -11,9 +11,7 @@ declare -A WORKLOG=(
 function getJiraIssues() {
   jiraDomain=$1
   jiraAuthHeader=$2
-  jiraUserId=$3
-  jiraUsername=$4
-  jiraJQL=$5
+  jiraJQL=$3
 
   local response=$(curl -s -w "%{http_code}" -X GET -G "$jiraDomain/rest/api/2/search" \
     --data-urlencode "$jiraJQL" \
@@ -182,7 +180,7 @@ while read -r credential; do
   jiraJQL=$(jq -r '.jira.JQL' <<< "$credential")
   jiraAuthHeader="Authorization: Basic $(echo -n "$jiraUsername:$jiraApiToken" | base64 -w 0)"
 
-  jiraIssues=$(getJiraIssues $jiraDomain "$jiraAuthHeader" $jiraUserId "$jiraUsername" "$jiraJQL")
+  jiraIssues=$(getJiraIssues $jiraDomain "$jiraAuthHeader" "$jiraJQL")
 
   if [ $? -ne 0 ]; then
     logger -p user.err "error: [$at] failed to fetch jira issues of $name"
