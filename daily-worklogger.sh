@@ -189,6 +189,8 @@ while read -r credential; do
 
   jiraIssues=$(jq -c '.[]' <<< "$jiraIssues")
 
+  declare -A STATUS=()
+
   if [[ ! -z $jiraIssues ]]; then
     while read -r jiraIssue; do
       key=$(jq -r '.key' <<< "$jiraIssue")
@@ -197,8 +199,14 @@ while read -r credential; do
 
       logger -p user.info "info: • $key: $summary [$status]"
 
-      WORKLOG["Coding"]+="• $key: $summary [$status]\n"
+      STATUS["$status"]+="• $key: $summary\n"
     done <<< "$jiraIssues"
+
+    WORKLOG["Coding"]=""
+
+    for KEY in "${!STATUS[@]}"; do
+      WORKLOG["Coding"]+="$KEY\n${STATUS["$KEY"]}\n"
+    done
   fi
 
   ###########################
