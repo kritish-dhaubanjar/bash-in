@@ -197,8 +197,6 @@ while read -r credential; do
       summary=$(jq -r '.summary' <<< "$jiraIssue")
       status=$(jq -r '.status' <<< "$jiraIssue")
 
-      logger -p user.info "info: • $key: $summary [$status]"
-
       STATUS["$status"]+="• $key: $summary\n"
     done <<< "$jiraIssues"
 
@@ -207,6 +205,8 @@ while read -r credential; do
     for KEY in "${!STATUS[@]}"; do
       WORKLOG["Coding"]+="$KEY\n${STATUS["$KEY"]}\n"
     done
+
+    logger -p user.info "info: ${WORKLOG["Coding"]}"
   fi
 
   ###########################
@@ -233,10 +233,10 @@ while read -r credential; do
     while read -r outlookCalendarEvent; do
       event=$(jq -r '.subject' <<< "$outlookCalendarEvent")
 
-      logger -p user.info "info: • $event"
-
       WORKLOG["Meeting"]+="• $event\n"
     done <<< "$outlookCalendarEvents"
+
+    logger -p user.info "info: ${WORKLOG["Meeting"]}"
   fi
 
   #######################################################
