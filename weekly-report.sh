@@ -13,12 +13,13 @@ getWeeklyReport() {
   local projectId="$2"
   local reportUserIds="$3"
 
-  local response=$(curl -s -w "%{http_code}" -X GET -G "$REPORT_API_ENDPOINT"\
+  local response=$(curl -s -w "%{http_code}" -X GET -G "$CALENDAR_API_ENDPOINT"\
+    --data "fetchType=team" \
+    --data "worklog=true" \
+    --data "skipPagination=true" \
     --data "startDate=$startDate" \
     --data "endDate=$endDate" \
-    --data "projectId=$projectId" \
     --data "userIds=$reportUserIds" \
-    --data "additionalFields=tasks,allocation" \
     -H "authorization: Bearer $accessToken" \
   )
 
@@ -30,7 +31,7 @@ getWeeklyReport() {
 
   local json="${response%???}"
 
-  echo "$json" | jq -r '.data[] | .worklogs[] | .detail[] | .tasks[] | select(.taskType.name == "Coding" or .taskType.name == "QA") | .note' | sed 's/\\n/\n/g'
+  echo "$json" | jq -r ".data[] | select(.worklog != null) | .worklog | select(.worklog != null) | .worklog[] | select(.involvement.id == $projectId) .tasks[] | select(.taskType.name == \"Coding\" or .taskType.name == \"QA\") .note" | sed 's/\\n/\n/g'
 }
 
 while read -r credential; do
