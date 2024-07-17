@@ -84,7 +84,7 @@ while read -r credential; do
 
   while read -r worklog; do
     worklogId=$(jq -r '.id' <<< "$worklog")
-    employeeName=$(jq -r '.employee.fullname' <<< "$worklog")
+    employeeName=$(jq -r '.user.fullname' <<< "$worklog")
     workDate=$(jq -r '.workDate' <<< "$worklog")
 
     ##################
