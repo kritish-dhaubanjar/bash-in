@@ -79,7 +79,7 @@ function getPendingWorklog() {
   local accessToken=$1
   local date=$2
 
-  local response=$(curl -s -w "%{http_code}" -X GET -G "$ATTENDANCE_API_ENDPOINT" \
+  local response=$(curl -s -w "%{http_code}" -X GET -G "$CALENDAR_API_ENDPOINT" \
     --data "status=PENDING" \
     --data "fetchType=self" \
     --data "size=1" \
@@ -256,7 +256,7 @@ while read -r credential; do
     continue
   fi
 
-  pendingWorklogId=$(jq -r '.id' <<< "$pendingWorklog")
+  pendingWorklogId=$(jq -r '.worklog.id' <<< "$pendingWorklog")
   projectInvolvement=$(getProjectInvolvement "$accessToken" "$projectId")
 
   if [ $? -ne 0 ]; then
