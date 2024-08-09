@@ -50,7 +50,7 @@ getPendingWorklogs() {
   local accessToken="$1"
   local today=$(date +"%Y-%m-%d")
 
-  local response=$(curl -s -w "%{http_code}" -X GET -G "$ATTENDANCE_API_ENDPOINT" \
+  local response=$(curl -s -w "%{http_code}" -X GET -G "$CALENDAR_API_ENDPOINT" \
     --data "status=PENDING" \
     --data "fetchType=self" \
     --data "size=32" \
@@ -78,8 +78,8 @@ sendWorklog() {
   local worklogShifts="$3"
   local todoList="$4"
 
-  local worklogId=$(jq -r '.id' <<< "$worklog")
-  local workDate=$(jq -r '.workDate' <<< "$worklog")
+  local worklogId=$(jq -r '.worklog.id' <<< "$worklog")
+  local workDate=$(jq -r '.date' <<< "$worklog")
 
   local workWeekDay=$(date -d "$workDate" "+%w")
 
@@ -159,8 +159,8 @@ while read -r credential; do
   logger -p user.info "info: [$at] success to parse org file for $name"
 
   while read -r pendingWorklog; do
-    worklogId=$(jq -r '.id' <<< "$pendingWorklog")
-    workDate=$(jq -r '.workDate' <<< "$pendingWorklog")
+    worklogId=$(jq -r '.worklog.id' <<< "$pendingWorklog")
+    workDate=$(jq -r '.date' <<< "$pendingWorklog")
 
     worklog=$(sendWorklog "$accessToken" "$pendingWorklog" "$worklogShifts" "$todoList")
 
