@@ -211,6 +211,20 @@ while read -r credential; do
     logger -p user.info "info: ${WORKLOG["Coding"]}"
   fi
 
+  #######################################################
+  # git
+  #######################################################
+  email=$(jq -r '.git.email' <<< "$credential")
+  LOGS="$(logex -a "$email" "$REPOSITORIES")"
+
+  if [[ ! -z $LOGS ]]; then
+    logger -p user.info "info: ${LOGS}"
+
+    while read -r log; do
+      WORKLOG["Coding"]+="\n${log}"
+    done <<< "$LOGS"
+  fi
+
   ###########################
   # getOutlookCalendarEvents
   ##########################
