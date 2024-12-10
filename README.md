@@ -11,6 +11,11 @@ sudo apt install python3-pip
 pip install orgparse
 ```
 
+### [logex](https://github.com/kritish-dhaubanjar/logex)
+```sh
+sudo curl -L https://raw.githubusercontent.com/kritish-dhaubanjar/logex/main/logex.sh -o /usr/local/bin/logex && sudo chmod +x /usr/local/bin/logex
+```
+
 ## bash-in
 
 ```
