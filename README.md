@@ -33,3 +33,34 @@ sudo curl -L https://raw.githubusercontent.com/kritish-dhaubanjar/logex/main/log
 ```
 
 ![image](https://github.com/kritish-dhaubanjar/bash-in/assets/25634165/eb06e67c-03c9-410c-bab1-cc3eb374a4fa)
+
+## rsyslog
+
+1. **/etc/rsyslog.d**
+```
+module(load="omprog")
+
+if $programname == 'mele' then {
+  action(type="omprog" binary="/usr/lib/rsyslog/rsyslog-webhook")
+}
+```
+
+2. **/usr/lib/rsyslog/rsyslog-webhook**
+```
+#!/bin/bash
+
+WEBHOOK_URL="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+while read line; do
+  curl -s -H "Content-Type: application/json" \
+    -X POST \
+    -d "{\"content\": \"$line\"}" \
+    "$WEBHOOK_URL" >> /dev/null
+done
+```
+
+3. **/etc/apparmor.d/rsyslog.d**
+```
+/usr/bin/* ix,
+/usr/lib/rsyslog/* ix,
+``
