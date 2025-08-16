@@ -63,4 +63,4 @@ done
 ```
 /usr/bin/* ix,
 /usr/lib/rsyslog/* ix,
-``
+```
