@@ -239,7 +239,7 @@ while read -r credential; do
   outlookCalendarEvents=$(getOutlookCalendarEvents $outlookCalendarAPI "$outlookAuthHeader")
 
   if [ $? -ne 0 ]; then
-    logger -p user.err "error: [$at] failed to fetch outlook calendar enents for $name"
+    logger -p user.err "error: [$at] failed to fetch outlook calendar events for $name"
     continue
   fi
 
