@@ -52,9 +52,11 @@ if $programname == 'mele' then {
 WEBHOOK_URL="https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 while read line; do
+  LINE="${line#*mele:}"
+
   curl -s -H "Content-Type: application/json" \
     -X POST \
-    -d "{\"content\": \"$line\"}" \
+    -d "{\"content\": \"$LINE\"}" \
     "$WEBHOOK_URL" >> /dev/null
 done
 ```
