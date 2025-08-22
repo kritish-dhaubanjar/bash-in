@@ -40,6 +40,8 @@ updateRefreshToken(){
 }
 
 index=0
+length=$(jq -c 'length' "$CREDENTIALS")
+
 while read -r credential; do
   at=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -69,4 +71,6 @@ while read -r credential; do
   index=$(($index + 1))
 done <<< "$credentials"
 
-updateRefreshToken
+if [ $index -eq $length ];then
+  updateRefreshToken
+fi
