@@ -34,6 +34,27 @@ sudo curl -L https://raw.githubusercontent.com/kritish-dhaubanjar/logex/main/log
 
 ![image](https://github.com/kritish-dhaubanjar/bash-in/assets/25634165/eb06e67c-03c9-410c-bab1-cc3eb374a4fa)
 
+### Setup
+| Key | Value |
+|-|-|
+| name | Kritish Dhaubanjar |
+| refreshToken | Vyaguta Refresh Token |
+| accessToken | Vyaguta Access Token |
+| locations | <[SUN, MON, TUE, WED, THU, FRI, SAT]> {null, HOME, OFFICE} |
+| projectId | Vyaguta Project ID |
+| reportUserIds | Vyaguta User IDs |
+| jira.boardId | 19 {https://traytinc.atlassian.net/jira/software/c/projects/AP/boards/19} |
+| jira.userId | Jira User ID |
+| jira.domain | https://traytinc.atlassian.net |
+| jira.username | kritishd@trayt.health |
+| jira.apiToken | Jira API Token |
+| jira.JQL | JQL |
+| switch.* | Feature Flags |
+| outlook.calendar | Outlook Public Calendar Link |
+| outlook.api | Outlook Public Calendar Link service.svc API |
+| outlook.x-owa-urlpostdata | Decoded x-owa-urlpostdata header value |
+| git.email | kritish.dhaubanjar@gmail.com |
+
 ## rsyslog
 
 1. **/etc/rsyslog.d**
