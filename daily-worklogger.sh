@@ -285,5 +285,5 @@ while read -r credential; do
     continue
   fi
 
-  logger -p user.info "info: [$at] successfully filled of $name for $today, in draft state"
+  logger -p user.info "info: [$at] successfully filled worklog of $name for $today, in draft state"
 done <<< $credentials
