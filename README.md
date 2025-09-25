@@ -82,7 +82,7 @@ while read line; do
 done
 ```
 
-3. **/etc/apparmor.d/rsyslog.d**
+3. **/etc/apparmor.d/rsyslog.d/rsyslog**
 ```
 /usr/bin/* ix,
 /usr/lib/rsyslog/* ix,
