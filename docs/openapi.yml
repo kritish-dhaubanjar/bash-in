@@ -1,0 +1,509 @@
+openapi: 3.1.3
+info:
+  title: bash-in
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuth:
+      type: http
+      scheme: basic
+
+paths:
+  /api/auth/authorize:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    get:
+      summary: Generate Authentication Tokens
+      operationId: generateAuthenticationTokens
+      parameters:
+        - name: clientId
+          in: query
+          required: true
+          schema:
+            type: string
+            example: lms
+          description: Client ID
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Refresh Token
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        description: Access Token
+                      refreshToken:
+                        type: string
+                        description: Refresh Token
+              examples:
+                default:
+                  value:
+                    data:
+                      accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+                      refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+
+  /api/leave/worklogs:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    get:
+      summary: Get Submitted Worklogs
+      operationId: getSubmittedWorklogs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2023-02-01
+          description: Start Date in YYYY-MM-DD format
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2023-02-28
+          description: End Date in YYYY-MM-DD format
+        - name: size
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 100
+          description: Number of records to fetch
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: SUBMITTED
+          description: Status filter (e.g., SUBMITTED)
+        - name: fetchType
+          in: query
+          required: false
+          schema:
+            type: string
+            example: team
+          description: Fetch type filter (e.g., team)
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 12345
+                        workDate:
+                          type: string
+                          format: date
+                          example: 2023-02-15
+                        user:
+                          type: object
+                          properties:
+                            fullname:
+                              type: string
+                              example: John Doe
+    post:
+      summary: Update Attendance
+      operationId: updateAttendance
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+                  example: HOME
+                workDate:
+                  type: string
+                  format: date
+                  example: 2023-02-13
+            examples:
+              default:
+                value:
+                  location: HOME
+                  workDate: 2023-02-13
+
+  /api/leave/worklogs/{worklogId}/status:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    patch:
+      summary: Process Worklog
+      operationId: processWorklog
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: worklogId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 12345
+          description: Worklog ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  format: date
+                  example: APPROVED
+            examples:
+              default:
+                value:
+                  status: APPROVED
+
+  /api/leave/worklogs/{worklogId}:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    put:
+      summary: Send Worklog
+      operationId: sendWorklog
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: worklogId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 12345
+          description: Worklog ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  format: date
+                  example: PENDING
+                worklog:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      involvement:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: 185
+                          name:
+                            type: string
+                            example: Trayt.Health
+                          type:
+                            type: string
+                            example: Project
+                      tasks:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            taskType:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: 1
+                                name:
+                                  type: string
+                                  example: Coding
+                            note:
+                              type: string
+                              example: "AP-1234: Worked on feature"
+            examples:
+              default:
+                value:
+                  status: PENDING
+                  worklog:
+                    - involvement:
+                        id: 185
+                        name: Trayt.Health
+                        type: Project
+                      tasks:
+                        - taskType:
+                            id: 1
+                            name: Coding
+                          note: "AP-1234: Worked on feature"
+                        - taskType:
+                            id: 4
+                            name: Meeting
+                          note: "Sprint planning meeting"
+
+  /api/leave/calendar:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    get:
+      summary: Check Calendar
+      operationId: checkCalendar
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: fetchType
+          in: query
+          required: true
+          schema:
+            type: string
+            example: self
+          description: Fetch type (e.g., self)
+        - name: worklog
+          in: query
+          required: true
+          schema:
+            type: string
+            example: true
+          description: Whether to include worklogs (e.g. true)
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2023-02-13
+          description: Start Date in YYYY-MM-DD format
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2023-02-13
+          description: End Date in YYYY-MM-DD format
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: SUBMITTED
+          description: Status filter (e.g., PENDING)
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 100
+          description: Number of records to fetch
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        worklog:
+                          type: [object, "null"]
+                          properties:
+                            id:
+                              type: integer
+                              example: 12345
+                            status:
+                              type: string
+                              example: APPROVED
+                            location:
+                              type: string
+                              example: OFFICE
+                            workShift:
+                              type: string
+                              example: DAY_SHIFT
+                            totalDuration:
+                              type: integer
+                              example: 480
+                        holiday:
+                          type: [object, "null"]
+                          properties:
+                            id:
+                              type: integer
+                              example: 228
+                            name:
+                              type: string
+                              example: Tihar (Bhai Tika)
+                            description:
+                              type: string
+                              example: Nepal Holiday
+
+  /api/teams/involvements:
+    servers:
+      - url: https://vyaguta.lftechnology.com
+    get:
+      summary: Get Project Involvement
+      operationId: getProjectInvolvement
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 228
+                        name:
+                          type: string
+                          example: Trayt.Health
+                        type:
+                          type: string
+                          example: Projecy
+                        status:
+                          type: string
+                          example: In Progress
+
+  /rest/api/2/search/jql:
+    servers:
+      - url: https://traytinc.atlassian.net
+    get:
+      summary: Get Jira Issues
+      operationId: getJiraIssues
+      security:
+        - BasicAuth: []
+      parameters:
+        - name: jql
+          in: query
+          required: true
+          schema:
+            type: string
+          description: JQL query string (e.g., ((updated > -12h AND assignee=5ffd62b8f7ea2a0107f09a3e) OR (issuekey in updatedBy('kritishd@trayt.health', -12h))))
+        - name: fields
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Fields to retrieve (e.g., *all)
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          example: AP-1234
+                        fields:
+                          type: object
+                          properties:
+                            summary:
+                              type: string
+                              example: "Implement new feature"
+                            status:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  example: In Progress
+                            project:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                  example: Trayt.Health
+
+  /owa/published/{email}/{id}/service.svc:
+    servers:
+      - url: https://outlook.office365.com
+    get:
+      summary: Get Outlook Calendar Events
+      operationId: getOutlookCalendarEvents
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: action
+          in: query
+          required: true
+          schema:
+            type: string
+            example: FindItem
+        - name: x-owa-urlpostdata
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of Outlook calendar events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Body:
+                    type: object
+                    properties:
+                      ResponseMessages:
+                        type: object
+                        properties:
+                          Items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                RootFolder:
+                                  type: object
+                                  properties:
+                                    Items:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          Subject:
+                                            type: string
+                                            example: Team Meeting
