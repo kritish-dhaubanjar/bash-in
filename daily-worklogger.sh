@@ -13,8 +13,9 @@ function getJiraIssues() {
   jiraAuthHeader=$2
   jiraJQL=$3
 
-  local response=$(curl -s -w "%{http_code}" -X GET -G "$jiraDomain/rest/api/2/search" \
+  local response=$(curl -s -w "%{http_code}" -X GET -G "$jiraDomain/rest/api/2/search/jql" \
     --data-urlencode "$jiraJQL" \
+    --data-urlencode "fields=*all" \
     -H "Content-Type: application/json" \
     -H "$jiraAuthHeader"
   )
