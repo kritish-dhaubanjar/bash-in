@@ -6,7 +6,32 @@ credentials=$(jq -c '.[]' $CREDENTIALS)
 declare -A WORKLOG=(
   Coding=""
   Meeting=""
+  Other=""
 )
+
+function getGithubInvolvedIssues(){
+  local username=$1
+  local token=$2
+  local date=$3
+
+  local response=$(curl -s -w "%{http_code}" -X GET -G "$GITHUB_ISSUE_API_ENDPOINT" \
+    --data "q=is:pr+reviewed-by:$username+updated:>=$date" \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: Bearer $token" \
+  )
+
+  local statusCode="${response: -3}"
+
+  if [ "$statusCode" -ne 200 ]; then
+    return 1
+  fi
+
+  local json="${response%???}"
+
+  local issues=$(jq -r '[.items[] | select(.title) | {title: .title}]' <<< "$json")
+
+  echo "$issues"
+}
 
 function getJiraIssues() {
   jiraDomain=$1
@@ -131,6 +156,13 @@ function sendWorklog() {
               "name": "Meeting"
             },
             "note": "$(echo ${WORKLOG["Meeting"]} | tr '"' "'")"
+          },
+          {
+            "taskType": {
+              "id": 10,
+              "name": "Other"
+            },
+            "note": "$(echo ${WORKLOG["Other"]} | tr '"' "'")"
           }
         ]
       }
@@ -164,6 +196,7 @@ while read -r credential; do
 
   WORKLOG["Coding"]=""
   WORKLOG["Meeting"]=""
+  WORKLOG["Other"]=""
 
   if [ "$switch" != "true" ]; then
     logger -p user.info "info: [$at] skipping daily-worklogger for $name"
@@ -224,6 +257,31 @@ while read -r credential; do
     while read -r log; do
       WORKLOG["Coding"]+="\n${log}"
     done <<< "$LOGS"
+  fi
+
+  ###########################
+  # getGithubInvolvedIssues
+  ##########################
+  githubUsername=$(jq -r '.git.username' <<< "$credential")
+  githubApiToken=$(jq -r '.git.apiToken' <<< "$credential")
+
+  githubIssues=$(getGithubInvolvedIssues $githubUsername $githubApiToken $today)
+
+  if [ $? -ne 0 ]; then
+    logger -p user.err "error: [$at] failed to fetch github issues for $name"
+    continue
+  fi
+
+  githubIssues=$(jq -c '.[]' <<< "$githubIssues")
+
+  if [[ ! -z $githubIssues ]]; then
+    WORKLOG["Other"]+="PRs Reviewed\n"
+
+    while read -r githubIssue; do
+      title=$(jq -r '.title' <<< "$githubIssue")
+
+      WORKLOG["Other"]+="\n• ${title}"
+    done <<< "$githubIssues"
   fi
 
   ###########################
