@@ -1,6 +1,8 @@
 #!/bin/bash
 
 source $ENV
+source "$GITHUB_REPORTER"
+
 credentials=$(jq -c '.[]' $CREDENTIALS)
 
 declare -A WORKLOG=(
@@ -8,30 +10,6 @@ declare -A WORKLOG=(
   Meeting=""
   Other=""
 )
-
-function getGithubInvolvedIssues(){
-  local username=$1
-  local token=$2
-  local date=$3
-
-  local response=$(curl -s -w "%{http_code}" -X GET -G "$GITHUB_ISSUE_API_ENDPOINT" \
-    --data "q=is:pr+reviewed-by:$username+updated:>=$date" \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer $token" \
-  )
-
-  local statusCode="${response: -3}"
-
-  if [ "$statusCode" -ne 200 ]; then
-    return 1
-  fi
-
-  local json="${response%???}"
-
-  local issues=$(jq -r '[.items[] | select(.title) | {title: .title}]' <<< "$json")
-
-  echo "$issues"
-}
 
 function getJiraIssues() {
   jiraDomain=$1
@@ -260,28 +238,24 @@ while read -r credential; do
   fi
 
   ###########################
-  # getGithubInvolvedIssues
+  # getGithubReviews
   ##########################
   githubUsername=$(jq -r '.git.username' <<< "$credential")
   githubApiToken=$(jq -r '.git.apiToken' <<< "$credential")
 
-  githubIssues=$(getGithubInvolvedIssues $githubUsername $githubApiToken $today)
+  githubReviews=$(getGithubReviews "$githubUsername" "$githubApiToken" "$today")
 
   if [ $? -ne 0 ]; then
-    logger -p user.err "error: [$at] failed to fetch github issues for $name"
+    logger -p user.err "error: [$at] failed to fetch github reviews for $name"
     continue
   fi
 
-  githubIssues=$(jq -c '.[]' <<< "$githubIssues")
-
-  if [[ ! -z $githubIssues ]]; then
+  if [[ ! -z $githubReviews ]]; then
     WORKLOG["Other"]+="PRs Reviewed\n"
 
-    while read -r githubIssue; do
-      title=$(jq -r '.title' <<< "$githubIssue")
-
-      WORKLOG["Other"]+="\n• ${title}"
-    done <<< "$githubIssues"
+    while read -r githubReview; do
+      WORKLOG["Other"]+="\n• ${githubReview}"
+    done <<< "$githubReviews"
   fi
 
   ###########################
