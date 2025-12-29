@@ -74,7 +74,7 @@ function getGithubReviews(){
         return 1
       fi
 
-    reviewsCount=$(jq -c '[ .[] ] | length' <<< "$reviews")
+    reviewsCount=$(jq -c '[ .[] ] | length // 0' <<< "${reviews:-[]}")
 
       if [ "$reviewsCount" -gt 0 ]; then
         echo "$title"
