@@ -251,7 +251,7 @@ while read -r credential; do
   fi
 
   if [[ ! -z $githubReviews ]]; then
-    WORKLOG["Other"]+="PRs Reviewed\n"
+    WORKLOG["Other"]+="PRs Reviewed"
 
     while read -r githubReview; do
       WORKLOG["Other"]+="\n• ${githubReview}"
